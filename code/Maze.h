@@ -1,18 +1,17 @@
 /**
  * @file Maze.h
  * @author mzx
- * @version 0.1
- * @date 2022-02-25
+ * @version 0.2
+ * @date 2022-05-21
  */
 #ifndef MAZE_H
 #define MAZE_H
 
-#include <windows.h>
-
 #include <algorithm>
-#include <cstdio>
-#include <ctime>
+#include <iostream>
+#include <queue>
 #include <random>
+#include <stack>
 #include <utility>
 #include <vector>
 
@@ -25,13 +24,13 @@ const int RDTMS = 30;
 const char WALL = '+';
 const char UNVST = ' ';
 const char VST = '.';
-const char CUR = 'O';
+const char CUR = '%';
 const char GONE = '$';
-const char BGN = '$';
-const char EDN = '$';
+const char DNE = '?';
 const int DIRs = 4;
 const int Xs[] = {0, 1, 0, -1};
 const int Ys[] = {1, 0, -1, 0};
+const int ID_STW = 28;
 char graph[HEIGHT][WIDTH];
 int befx[HEIGHT][WIDTH], befy[HEIGHT][WIDTH];
 inline int hs(int x, int y) { return (x >> 1) * (WIDTH >> 1) + (y >> 1); }
@@ -42,15 +41,17 @@ inline std::pair<int, int> rhs(int v) {
 int fa[MXHS];
 
 void print() {
-  system("cls");
+  system("clear");
   for (int i(0); i != HEIGHT; ++i) {
-    for (int j(0); j != WIDTH; ++j) putchar(graph[i][j]);
-    puts("");
+    for (int j(0); j != WIDTH; ++j) std::cout << graph[i][j];
+    std::cout << '\n';
   }
-  Sleep(20);
+  std::cout << std::endl;
+  system("sleep 0.005");
 }
 int find(int x) { return x ^ fa[x] ? fa[x] = find(fa[x]) : x; }
 void init() {
+  std::ios::sync_with_stdio(false);
   for (int i(0); i != HEIGHT; ++i)
     for (int j(0); j != WIDTH; ++j) graph[i][j] = WALL;
   srand(time(0));
@@ -78,7 +79,6 @@ void init() {
     x = gen() % (HEIGHT - 2) + 1, y = gen() % (HEIGHT - 2) + 1;
     graph[x][y] = UNVST;
   }
-  graph[1][0] = BGN, graph[HEIGHT - 2][WIDTH - 1] = EDN;
 }
 
 void goback() {
@@ -86,6 +86,17 @@ void goback() {
   while (x || y)
     graph[x][y] = GONE, bx = x, by = y, x = befx[bx][by], y = befy[bx][by],
     print();
+  for (int i(0); i != HEIGHT; ++i)
+    for (int j(0); j != WIDTH; ++j)
+      if (graph[i][j] != GONE && graph[i][j] != WALL) graph[i][j] = UNVST;
+  print();
+}
+
+void ckdne() {
+  for (int i(0); i != HEIGHT; ++i)
+    for (int j(0); j != WIDTH; ++j)
+      if (graph[i][j] == VST) graph[i][j] = DNE;
+  print();
 }
 
 }  // namespace maze
