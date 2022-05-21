@@ -1,11 +1,9 @@
 /**
  * @file Astar.cpp
  * @author mzx
- * @version 0.1
- * @date 2022-02-25
+ * @version 0.2
+ * @date 2022-05-21
  */
-#include <queue>
-
 #include "Maze.h"
 using namespace maze;
 using namespace std;
